@@ -1,0 +1,32 @@
+{
+  "tooltip": "This week: {0}% used · resets in {1}",
+  "value.percent": "{0}%",
+
+  "section.weekly": "WEEKLY",
+  "section.five_hour": "5-HOUR WINDOW",
+
+  "label.all_models": "All models",
+  "label.sonnet": "Sonnet",
+  "label.usage": "Usage",
+
+  "time.days_hours": "{0}d {1}h",
+  "time.hours_minutes": "{0}h {1}m",
+  "time.minutes": "{0}m",
+  "time.reset": "reset",
+  "remaining.suffix": "{0} left",
+  "footer.updated": "Updated: {0}",
+
+  "menu.refresh": "Refresh now",
+  "menu.open_usage": "Open claude.ai/settings/usage",
+  "menu.run_at_startup": "Run at startup",
+  "menu.quit": "Quit",
+
+  "error.cookie_db": "Cannot read Chrome cookie database",
+  "error.no_session": "No claude.ai session — please log in via Chrome",
+  "error.cookie_decrypt": "Cookie decryption failed",
+  "error.cookie_empty": "Cookie decrypted as empty",
+  "error.unknown_cookie_version": "Unknown cookie version",
+  "error.api_parse": "Usage JSON parse error",
+  "error.org_not_found": "Organization ID not found",
+  "error.http": "HTTP {0}: {1}"
+}

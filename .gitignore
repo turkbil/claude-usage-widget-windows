@@ -1,0 +1,27 @@
+# Build output
+bin/
+obj/
+publish/
+*.user
+
+# Single-file/self-extract leftovers
+*.exe
+*.pdb
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.suo
+*.userprefs
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~
+
+# Logs / temp
+*.log

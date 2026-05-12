@@ -1,0 +1,32 @@
+{
+  "tooltip": "Bu hafta: %{0} kullanıldı · reset {1}",
+  "value.percent": "%{0}",
+
+  "section.weekly": "BU HAFTA",
+  "section.five_hour": "5 SAATLİK PENCERE",
+
+  "label.all_models": "Tüm modeller",
+  "label.sonnet": "Sonnet",
+  "label.usage": "Kullanım",
+
+  "time.days_hours": "{0}g {1}s",
+  "time.hours_minutes": "{0}s {1}dk",
+  "time.minutes": "{0}dk",
+  "time.reset": "sıfırlandı",
+  "remaining.suffix": "{0} kaldı",
+  "footer.updated": "Güncelleme: {0}",
+
+  "menu.refresh": "Şimdi yenile",
+  "menu.open_usage": "claude.ai/settings/usage'ı aç",
+  "menu.run_at_startup": "Açılışta başlat",
+  "menu.quit": "Çıkış",
+
+  "error.cookie_db": "Chrome cookie veritabanı okunamadı",
+  "error.no_session": "claude.ai oturumu yok — Chrome'da giriş yap",
+  "error.cookie_decrypt": "Cookie çözme başarısız",
+  "error.cookie_empty": "Çözülen cookie boş",
+  "error.unknown_cookie_version": "Bilinmeyen cookie sürümü",
+  "error.api_parse": "Kullanım JSON ayrıştırma hatası",
+  "error.org_not_found": "Organizasyon ID bulunamadı",
+  "error.http": "HTTP {0}: {1}"
+}

@@ -1,0 +1,32 @@
+{
+  "tooltip": "Diese Woche: {0} % verwendet · Reset in {1}",
+  "value.percent": "{0} %",
+
+  "section.weekly": "DIESE WOCHE",
+  "section.five_hour": "5-STUNDEN-FENSTER",
+
+  "label.all_models": "Alle Modelle",
+  "label.sonnet": "Sonnet",
+  "label.usage": "Nutzung",
+
+  "time.days_hours": "{0}T {1}Std",
+  "time.hours_minutes": "{0}Std {1}Min",
+  "time.minutes": "{0}Min",
+  "time.reset": "zurückgesetzt",
+  "remaining.suffix": "{0} übrig",
+  "footer.updated": "Aktualisiert: {0}",
+
+  "menu.refresh": "Jetzt aktualisieren",
+  "menu.open_usage": "claude.ai/settings/usage öffnen",
+  "menu.run_at_startup": "Beim Start ausführen",
+  "menu.quit": "Beenden",
+
+  "error.cookie_db": "Chrome Cookie-Datenbank nicht lesbar",
+  "error.no_session": "Keine claude.ai-Sitzung — bitte in Chrome anmelden",
+  "error.cookie_decrypt": "Cookie-Entschlüsselung fehlgeschlagen",
+  "error.cookie_empty": "Entschlüsseltes Cookie leer",
+  "error.unknown_cookie_version": "Unbekannte Cookie-Version",
+  "error.api_parse": "Nutzungs-JSON Parse-Fehler",
+  "error.org_not_found": "Organisations-ID nicht gefunden",
+  "error.http": "HTTP {0}: {1}"
+}

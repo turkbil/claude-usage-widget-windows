@@ -1,0 +1,32 @@
+{
+  "tooltip": "Cette semaine : {0} % utilisé · réinitialisation dans {1}",
+  "value.percent": "{0} %",
+
+  "section.weekly": "CETTE SEMAINE",
+  "section.five_hour": "FENÊTRE DE 5 HEURES",
+
+  "label.all_models": "Tous les modèles",
+  "label.sonnet": "Sonnet",
+  "label.usage": "Utilisation",
+
+  "time.days_hours": "{0}j {1}h",
+  "time.hours_minutes": "{0}h {1}min",
+  "time.minutes": "{0}min",
+  "time.reset": "réinitialisé",
+  "remaining.suffix": "{0} restant",
+  "footer.updated": "Mis à jour : {0}",
+
+  "menu.refresh": "Actualiser maintenant",
+  "menu.open_usage": "Ouvrir claude.ai/settings/usage",
+  "menu.run_at_startup": "Démarrer au lancement",
+  "menu.quit": "Quitter",
+
+  "error.cookie_db": "Impossible de lire la base de données de cookies Chrome",
+  "error.no_session": "Aucune session claude.ai — connectez-vous via Chrome",
+  "error.cookie_decrypt": "Échec du déchiffrement du cookie",
+  "error.cookie_empty": "Cookie déchiffré vide",
+  "error.unknown_cookie_version": "Version de cookie inconnue",
+  "error.api_parse": "Erreur d'analyse JSON d'utilisation",
+  "error.org_not_found": "ID d'organisation introuvable",
+  "error.http": "HTTP {0}: {1}"
+}
