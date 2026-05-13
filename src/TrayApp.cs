@@ -113,10 +113,10 @@ public sealed class TrayApp : ApplicationContext
 
     private void OnPrefsChanged()
     {
-        if (_tray.InvokeRequired)
+        // PrefsStore.Update can fire from any thread. Marshal back to the UI
+        // thread via the popup form (which always has a window handle).
+        if (_popup.IsHandleCreated && _popup.InvokeRequired)
         {
-            // Marshal back to UI thread (PrefsStore.Update can fire from anywhere).
-            // Find a stable invoker — the popup form has a handle.
             try { _popup.BeginInvoke(new Action(OnPrefsChanged)); } catch { }
             return;
         }

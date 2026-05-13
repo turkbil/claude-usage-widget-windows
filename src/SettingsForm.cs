@@ -26,7 +26,7 @@ public sealed class SettingsForm : Form
     private readonly List<TitleRow> _titleRows = new();
     private readonly List<Button> _emojiButtons = new();
     private TextBox? _customEmoji;
-    private RadioButton? _radEmoji, _radCustom, _radDonut, _radNone;
+    private RadioButton? _radCustom, _radDonut, _radNone;
     private readonly List<RadioButton> _refreshRadios = new();
     private CheckBox? _notifEnable;
     private TrackBar? _warnSlider, _alertSlider, _criticalSlider;
