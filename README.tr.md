@@ -4,9 +4,11 @@
 [![Lisans: MIT](https://img.shields.io/badge/Lisans-MIT-d68c45.svg)](LICENSE)
 [![Windows 10/11](https://img.shields.io/badge/Windows-10%20%7C%2011-d68c45?logo=windows)](#gereksinimler)
 
-Windows sistem tepsisi için native bir widget — [**claude-usage-widget**](https://github.com/turkbil/claude-usage-widget) (macOS) kardeşinin Windows muadili. Aynı veri kaynağı, aynı dropdown, aynı ayarlar penceresi, aynı özellikler.
+**Windows sistem tepsisi widget'ı** — macOS kardeşiyle aynı veri kaynağı, aynı dropdown, aynı Ayarlar penceresi, aynı özellikler.
 
-[**English README →**](README.md)
+> 💻 **Bu Windows sürümü.** Mac'te misin? → [**claude-usage-widget**](https://github.com/turkbil/claude-usage-widget)
+>
+> 🌐 [**English README**](README.md)  ·  Ücretsiz, açık kaynak (MIT), `.exe` [Releases sayfasında](https://github.com/turkbil/claude-usage-widget-windows/releases/latest)
 
 ```
 …  [^]  [🟢32]  [🔊]  [📶]  [12:46]            ← saatin yanına oturur

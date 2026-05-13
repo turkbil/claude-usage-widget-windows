@@ -4,9 +4,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-d68c45.svg)](LICENSE)
 [![Windows 10/11](https://img.shields.io/badge/Windows-10%20%7C%2011-d68c45?logo=windows)](#requirements)
 
-A native Windows system-tray companion to [**claude-usage-widget**](https://github.com/turkbil/claude-usage-widget) (macOS). Same data source — claude.ai's own usage API — same dropdown, same Settings window, same features.
+**Native Windows system-tray widget** — same data source, same dropdown, same Settings window, same features as the macOS sibling.
 
-[**Türkçe README →**](README.tr.md)
+> 💻 **This is the Windows version.** On Mac? → [**claude-usage-widget**](https://github.com/turkbil/claude-usage-widget)
+>
+> 🌐 [**Türkçe README**](README.tr.md)  ·  Free, open source (MIT), `.exe` on the [Releases page](https://github.com/turkbil/claude-usage-widget-windows/releases/latest)
 
 ```
 …  [^]  [🟢32]  [🔊]  [📶]  [12:46]            ← lives next to your clock
