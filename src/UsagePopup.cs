@@ -1,26 +1,32 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace ClaudeUsageWidget;
 
-/// Borderless, always-on-top popup window shown when the tray icon is clicked.
-/// Layout mirrors the macOS dropdown: account header, weekly section,
-/// 5-hour section, footer. Hides on focus loss.
+/// Borderless, always-on-top popup shown when the tray icon is clicked.
+/// Account header → weekly rows → forecast line → sparkline → 5h rows →
+/// footer → credit links.
 public sealed class UsagePopup : Form
 {
     private const int PopupWidth = 320;
     private const int HPad = 18;
 
-    private readonly Label nameLabel;
-    private readonly PillLabel planPill;
-    private readonly SectionHeader weeklyHeader;
-    private readonly UsageRow allModelsRow;
-    private readonly UsageRow sonnetRow;
-    private readonly SectionHeader fiveHourHeader;
-    private readonly UsageRow fiveHourRow;
-    private readonly Label footerLabel;
+    private readonly Label _nameLabel;
+    private readonly PillLabel _planPill;
+    private readonly SectionHeader _weeklyHeader;
+    private readonly UsageRow _allModelsRow;
+    private readonly UsageRow _sonnetRow;
+    private readonly Label _forecastLabel;
+    private readonly SparklineControl _sparkline;
+    private readonly SectionHeader _fiveHourHeader;
+    private readonly UsageRow _fiveHourRow;
+    private readonly Label _footerLabel;
+    private readonly LinkLabel _siteLink;
+    private readonly LinkLabel _xLink;
 
     public UsagePopup()
     {
@@ -36,57 +42,91 @@ public sealed class UsagePopup : Form
         KeyPreview = true;
         Region = MakeRoundedRegion();
 
-        nameLabel = new Label
+        _nameLabel = new Label
         {
             AutoSize = false,
             Font = new Font("Segoe UI Semibold", 11),
             ForeColor = Color.White,
-            Left = HPad,
-            Top = 14,
-            Width = PopupWidth - HPad * 2 - 96,
-            Height = 18,
+            Left = HPad, Top = 14, Width = PopupWidth - HPad * 2 - 96, Height = 18,
         };
-        Controls.Add(nameLabel);
+        Controls.Add(_nameLabel);
 
-        planPill = new PillLabel { Top = 12 };
-        Controls.Add(planPill);
+        _planPill = new PillLabel { Top = 12 };
+        Controls.Add(_planPill);
 
-        weeklyHeader = new SectionHeader { Top = 44, Width = PopupWidth };
-        Controls.Add(weeklyHeader);
+        _weeklyHeader = new SectionHeader { Top = 44, Width = PopupWidth };
+        Controls.Add(_weeklyHeader);
 
-        allModelsRow = new UsageRow { Top = 78, Width = PopupWidth };
-        Controls.Add(allModelsRow);
+        _allModelsRow = new UsageRow { Top = 78, Width = PopupWidth };
+        Controls.Add(_allModelsRow);
 
-        sonnetRow = new UsageRow { Top = 124, Width = PopupWidth };
-        Controls.Add(sonnetRow);
+        _sonnetRow = new UsageRow { Top = 124, Width = PopupWidth };
+        Controls.Add(_sonnetRow);
 
-        fiveHourHeader = new SectionHeader { Top = 180, Width = PopupWidth };
-        Controls.Add(fiveHourHeader);
-
-        fiveHourRow = new UsageRow { Top = 214, Width = PopupWidth };
-        Controls.Add(fiveHourRow);
-
-        footerLabel = new Label
+        _forecastLabel = new Label
         {
             AutoSize = false,
-            TextAlign = ContentAlignment.MiddleCenter,
             Font = new Font("Segoe UI", 9),
-            ForeColor = Color.FromArgb(150, 150, 155),
-            Left = HPad,
-            Top = 274,
-            Width = PopupWidth - HPad * 2,
-            Height = 18,
+            ForeColor = Color.FromArgb(180, 180, 185),
+            TextAlign = ContentAlignment.MiddleLeft,
+            Left = HPad, Top = 170, Width = PopupWidth - HPad * 2, Height = 18,
+            Visible = false,
         };
-        Controls.Add(footerLabel);
+        Controls.Add(_forecastLabel);
 
-        Height = 304;
+        _sparkline = new SparklineControl
+        {
+            Left = 0, Top = 194, Width = PopupWidth, Height = 44,
+        };
+        Controls.Add(_sparkline);
+
+        _fiveHourHeader = new SectionHeader { Top = 250, Width = PopupWidth };
+        Controls.Add(_fiveHourHeader);
+
+        _fiveHourRow = new UsageRow { Top = 284, Width = PopupWidth };
+        Controls.Add(_fiveHourRow);
+
+        _footerLabel = new Label
+        {
+            AutoSize = false, TextAlign = ContentAlignment.MiddleCenter,
+            Font = new Font("Segoe UI", 9), ForeColor = Color.FromArgb(150, 150, 155),
+            Left = HPad, Top = 344, Width = PopupWidth - HPad * 2, Height = 18,
+        };
+        Controls.Add(_footerLabel);
+
+        _siteLink = new LinkLabel
+        {
+            Text = "nurullah.net ↗", AutoSize = true,
+            Font = new Font("Segoe UI", 8),
+            LinkColor = Color.FromArgb(170, 170, 175),
+            ActiveLinkColor = Color.FromArgb(214, 140, 69),
+            VisitedLinkColor = Color.FromArgb(170, 170, 175),
+            Top = 370, Left = HPad,
+        };
+        _siteLink.Click += (_, _) => OpenUrl("https://www.nurullah.net");
+        Controls.Add(_siteLink);
+
+        _xLink = new LinkLabel
+        {
+            Text = "@nurullah ↗", AutoSize = true,
+            Font = new Font("Segoe UI", 8),
+            LinkColor = Color.FromArgb(170, 170, 175),
+            ActiveLinkColor = Color.FromArgb(214, 140, 69),
+            VisitedLinkColor = Color.FromArgb(170, 170, 175),
+            Top = 370, Left = PopupWidth - HPad - 80,
+        };
+        _xLink.Click += (_, _) => OpenUrl("https://x.com/nurullah");
+        Controls.Add(_xLink);
+
+        Height = 400;
+        Region = MakeRoundedRegion();
     }
 
     private Region MakeRoundedRegion()
     {
         const int r = 12;
         using var path = new GraphicsPath();
-        var rect = new Rectangle(0, 0, PopupWidth, 304);
+        var rect = new Rectangle(0, 0, PopupWidth, Height);
         path.AddArc(rect.X, rect.Y, r, r, 180, 90);
         path.AddArc(rect.Right - r - 1, rect.Y, r, r, 270, 90);
         path.AddArc(rect.Right - r - 1, rect.Bottom - r - 1, r, r, 0, 90);
@@ -99,57 +139,56 @@ public sealed class UsagePopup : Form
     {
         if (snap is not null)
         {
-            nameLabel.Text = snap.DisplayName ?? "";
-            planPill.SetText(snap.PlanLabel ?? "");
-            planPill.Visible = !string.IsNullOrEmpty(snap.PlanLabel);
-            if (planPill.Visible)
-                planPill.Left = PopupWidth - HPad - planPill.Width;
+            _nameLabel.Text = snap.DisplayName ?? "";
+            _planPill.SetText(snap.PlanLabel ?? "");
+            _planPill.Visible = !string.IsNullOrEmpty(snap.PlanLabel);
+            if (_planPill.Visible)
+                _planPill.Left = PopupWidth - HPad - _planPill.Width;
 
-            weeklyHeader.SetTitle(L.Get("section.weekly"),
-                L.Fmt("remaining.suffix", FormatRemaining(snap.WeeklyResetsAt)));
+            _weeklyHeader.SetTitle(L.Get("section.weekly"),
+                string.Format(L.Get("remaining.suffix"), Formatting.FormatRemaining(snap.WeeklyResetsAt)));
 
-            allModelsRow.SetData(L.Get("label.all_models"), snap.WeeklyUtilization);
-            allModelsRow.Visible = true;
+            _allModelsRow.SetData(L.Get("label.all_models"), snap.WeeklyUtilization);
+            _allModelsRow.Visible = true;
 
-            if (snap.SonnetUtilization.HasValue)
+            if (snap.SonnetUtilization is double sonnet)
             {
-                sonnetRow.SetData(L.Get("label.sonnet"), snap.SonnetUtilization.Value);
-                sonnetRow.Visible = true;
+                _sonnetRow.SetData(L.Get("label.sonnet"), sonnet);
+                _sonnetRow.Visible = true;
             }
-            else sonnetRow.Visible = false;
+            else _sonnetRow.Visible = false;
 
-            if (snap.FiveHourUtilization.HasValue && snap.FiveHourResetsAt.HasValue)
+            var forecastLine = Forecast.Line(snap);
+            _forecastLabel.Text = forecastLine ?? "";
+            _forecastLabel.Visible = forecastLine != null;
+            _forecastLabel.ForeColor = (Forecast.Compute(snap) is Forecast.WillHitLimit)
+                ? Color.FromArgb(255, 235, 165, 60)
+                : Color.FromArgb(180, 180, 185);
+
+            _sparkline.Snapshot = snap;
+            _sparkline.Samples = UsageHistory.Recent(7 * 24 * 3600);
+
+            if (snap.FiveHourUtilization is double fu && snap.FiveHourResetsAt is DateTime fr)
             {
-                fiveHourHeader.SetTitle(L.Get("section.five_hour"),
-                    L.Fmt("remaining.suffix", FormatRemaining(snap.FiveHourResetsAt.Value)));
-                fiveHourRow.SetData(L.Get("label.usage"), snap.FiveHourUtilization.Value);
-                fiveHourHeader.Visible = fiveHourRow.Visible = true;
+                _fiveHourHeader.SetTitle(L.Get("section.five_hour"),
+                    string.Format(L.Get("remaining.suffix"), Formatting.FormatRemaining(fr)));
+                _fiveHourRow.SetData(L.Get("label.usage"), fu);
+                _fiveHourHeader.Visible = _fiveHourRow.Visible = true;
             }
-            else fiveHourHeader.Visible = fiveHourRow.Visible = false;
+            else _fiveHourHeader.Visible = _fiveHourRow.Visible = false;
         }
 
         if (!string.IsNullOrEmpty(error))
         {
-            footerLabel.Text = "⚠ " + error;
-            footerLabel.ForeColor = Color.FromArgb(235, 90, 90);
+            _footerLabel.Text = "⚠ " + error;
+            _footerLabel.ForeColor = Color.FromArgb(235, 90, 90);
         }
         else if (snap is not null)
         {
-            footerLabel.Text = L.Fmt("footer.updated", snap.FetchedAt.ToLocalTime().ToString("t"));
-            footerLabel.ForeColor = Color.FromArgb(150, 150, 155);
+            _footerLabel.Text = string.Format(L.Get("footer.updated"),
+                snap.FetchedAt.ToLocalTime().ToString("t"));
+            _footerLabel.ForeColor = Color.FromArgb(150, 150, 155);
         }
-    }
-
-    public static string FormatRemaining(DateTime until)
-    {
-        var total = until - DateTime.UtcNow;
-        if (total.TotalSeconds <= 0) return L.Get("time.reset");
-        int d = (int)total.TotalDays;
-        int h = total.Hours;
-        int m = total.Minutes;
-        if (d > 0) return L.Fmt("time.days_hours", d, h);
-        if (h > 0) return L.Fmt("time.hours_minutes", h, m);
-        return L.Fmt("time.minutes", m);
     }
 
     public void ShowNear(Point anchorPoint)
@@ -164,20 +203,20 @@ public sealed class UsagePopup : Form
         Activate();
     }
 
-    protected override void OnDeactivate(EventArgs e)
-    {
-        base.OnDeactivate(e);
-        Hide();
-    }
+    protected override void OnDeactivate(EventArgs e) { base.OnDeactivate(e); Hide(); }
 
     protected override void OnKeyDown(KeyEventArgs e)
     {
         if (e.KeyCode == Keys.Escape) Hide();
         base.OnKeyDown(e);
     }
+
+    private static void OpenUrl(string url)
+    {
+        try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); } catch { }
+    }
 }
 
-/// Small rounded-rect "Max 20x" badge.
 internal sealed class PillLabel : Control
 {
     public PillLabel()
@@ -226,99 +265,77 @@ internal sealed class PillLabel : Control
 
 internal sealed class SectionHeader : Control
 {
-    private readonly Label titleLabel = new()
+    private readonly Label _title = new()
     {
         Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
         ForeColor = Color.FromArgb(160, 160, 165),
-        AutoSize = false,
-        Left = 18,
-        Top = 8,
-        Height = 14,
-        Width = 180,
+        AutoSize = false, Left = 18, Top = 8, Height = 14, Width = 180,
     };
-    private readonly Label trailingLabel = new()
+    private readonly Label _trailing = new()
     {
         Font = new Font("Cascadia Mono", 9),
         ForeColor = Color.FromArgb(140, 140, 145),
         TextAlign = ContentAlignment.MiddleRight,
-        AutoSize = false,
-        Top = 8,
-        Height = 14,
-        Width = 140,
+        AutoSize = false, Top = 8, Height = 14, Width = 140,
     };
 
     public SectionHeader()
     {
         Height = 26;
-        Controls.Add(titleLabel);
-        Controls.Add(trailingLabel);
+        Controls.Add(_title);
+        Controls.Add(_trailing);
     }
 
     protected override void OnResize(EventArgs e)
     {
         base.OnResize(e);
-        trailingLabel.Left = Width - 18 - trailingLabel.Width;
+        _trailing.Left = Width - 18 - _trailing.Width;
     }
 
     public void SetTitle(string title, string trailing)
     {
-        titleLabel.Text = title;
-        trailingLabel.Text = trailing;
+        _title.Text = title;
+        _trailing.Text = trailing;
     }
 }
 
 internal sealed class UsageRow : Control
 {
-    private readonly Label nameLabel = new()
+    private readonly Label _name = new()
     {
-        Font = new Font("Segoe UI", 10),
-        ForeColor = Color.White,
-        AutoSize = false,
-        Left = 18,
-        Top = 8,
-        Height = 18,
-        Width = 160,
+        Font = new Font("Segoe UI", 10), ForeColor = Color.White,
+        AutoSize = false, Left = 18, Top = 8, Height = 18, Width = 160,
     };
-    private readonly Label valueLabel = new()
+    private readonly Label _value = new()
     {
         Font = new Font("Cascadia Mono", 9, FontStyle.Bold),
         ForeColor = Color.FromArgb(180, 180, 185),
         TextAlign = ContentAlignment.MiddleRight,
-        AutoSize = false,
-        Top = 8,
-        Height = 18,
-        Width = 64,
+        AutoSize = false, Top = 8, Height = 18, Width = 64,
     };
-    private readonly ProgressBarControl bar = new()
-    {
-        Left = 18,
-        Top = 30,
-        Height = 8,
-    };
+    private readonly ProgressBarControl _bar = new() { Left = 18, Top = 30, Height = 8 };
 
     public UsageRow()
     {
         Height = 44;
-        Controls.Add(nameLabel);
-        Controls.Add(valueLabel);
-        Controls.Add(bar);
+        Controls.Add(_name); Controls.Add(_value); Controls.Add(_bar);
     }
 
     protected override void OnResize(EventArgs e)
     {
         base.OnResize(e);
-        valueLabel.Left = Width - 18 - valueLabel.Width;
-        bar.Width = Width - 36;
+        _value.Left = Width - 18 - _value.Width;
+        _bar.Width = Width - 36;
     }
 
     public void SetData(string label, double percent)
     {
         int rounded = (int)Math.Round(percent);
-        nameLabel.Text = label;
-        valueLabel.Text = L.Fmt("value.percent", rounded);
+        _name.Text = label;
+        _value.Text = string.Format(L.Get("value.percent"), rounded);
         var color = IconRenderer.ColorForPercent(rounded);
-        bar.FillColor = color;
-        bar.Progress = percent / 100.0;
-        valueLabel.ForeColor = color;
+        _bar.FillColor = color;
+        _bar.Progress = percent / 100.0;
+        _value.ForeColor = color;
     }
 }

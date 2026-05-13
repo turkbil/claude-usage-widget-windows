@@ -1,5 +1,8 @@
 {
   "tooltip": "Bu hafta: %{0} kullanıldı · reset {1}",
+  "title.loading": "…",
+  "title.error": "?",
+  "title.percent": "%{0}",
   "value.percent": "%{0}",
 
   "section.weekly": "BU HAFTA",
@@ -18,15 +21,80 @@
 
   "menu.refresh": "Şimdi yenile",
   "menu.open_usage": "claude.ai/settings/usage'ı aç",
+  "menu.settings": "Ayarlar…",
   "menu.run_at_startup": "Açılışta başlat",
   "menu.quit": "Çıkış",
+  "menu.version_new": "Yeni: v{0} →",
 
-  "error.cookie_db": "Chrome cookie veritabanı okunamadı",
-  "error.no_session": "claude.ai oturumu yok — Chrome'da giriş yap",
-  "error.cookie_decrypt": "Cookie çözme başarısız",
-  "error.cookie_empty": "Çözülen cookie boş",
+  "menu.title_content": "Başlık içeriği",
+  "menu.icon": "Simge",
+  "menu.refresh_interval": "Yenileme aralığı",
+  "menu.notifications": "Bildirimler",
+  "menu.hotkey": "Klavye kısayolu",
+  "menu.browsers": "Tarayıcılar",
+  "menu.network": "Ağ & entegrasyon",
+  "menu.version_check": "Güncellemeleri kontrol et",
+  "menu.local_http": "Yerel HTTP endpoint (:9123)",
+  "menu.mcp_install": "MCP kurulum talimatları…",
+
+  "settings.title": "Claude Usage Widget — Ayarlar",
+
+  "metric.weekly_pct":   "Haftalık %",
+  "metric.weekly_time":  "Haftalık kalan süre",
+  "metric.five_pct":     "5 saatlik %",
+  "metric.five_time":    "5 saatlik kalan süre",
+
+  "mode.hidden": "Gizle",
+  "mode.text":   "Yazı",
+  "mode.donut":  "Donut",
+  "mode.color":  "Renk",
+
+  "icon.custom": "Özel emoji",
+  "icon.donut":  "Donut özet",
+  "icon.none":   "Simge yok",
+
+  "refresh.30s": "30 saniye",
+  "refresh.1m":  "1 dakika",
+  "refresh.5m":  "5 dakika",
+  "refresh.10m": "10 dakika",
+
+  "notifications.enable":   "Eşik bildirimlerini etkinleştir",
+  "notifications.warn":     "Uyarı",
+  "notifications.alert":    "Alarm",
+  "notifications.critical": "Kritik",
+  "notification.warn":      "Haftalık kullanım %{0}'e ulaştı — yavaşla.",
+  "notification.alert":     "Haftalık kullanım %{0} — yaklaşık 3 gün kaldı.",
+  "notification.critical":  "Haftalık kullanım kritik %{0} — yoğun oturumları ertele.",
+
+  "hotkey.enable":  "Genel kısayolu etkinleştir",
+  "hotkey.current": "Mevcut: {0}",
+  "hotkey.hint":    "Varsayılan: Ctrl+Alt+U",
+
+  "browser.chrome": "Google Chrome",
+  "browser.brave":  "Brave Browser",
+  "browser.edge":   "Microsoft Edge",
+  "browser.arc":    "Arc",
+
+  "button.ok":        "Tamam",
+  "button.cancel":    "İptal",
+  "button.copy_path": "Binary yolunu kopyala",
+
+  "mcp.install_title": "MCP sunucusu olarak kur",
+  "mcp.install_intro": "Bu parçayı ~/.claude.json dosyana ekle, sonra Claude Code'u yeniden başlat. Claude artık kendi haftalık limitini görmek için get_usage'ı çağırabilir.",
+  "mcp.copy_json":     "JSON'u kopyala",
+
+  "forecast.under":    "↗ Hafta sonu tahmini: %{0}",
+  "forecast.over":     "⚠ Bu hızla yaklaşık {0} sonra limit",
+  "forecast.exceeded": "⚠ Limit aşıldı",
+
+  "sparkline.empty": "trend verisi birikiyor…",
+
+  "error.cookie_db":              "Tarayıcı cookie veritabanı okunamadı",
+  "error.no_session":             "claude.ai oturumu yok — tarayıcında giriş yap",
+  "error.cookie_decrypt":         "Cookie çözme başarısız",
+  "error.cookie_empty":           "Çözülen cookie boş",
   "error.unknown_cookie_version": "Bilinmeyen cookie sürümü",
-  "error.api_parse": "Kullanım JSON ayrıştırma hatası",
-  "error.org_not_found": "Organizasyon ID bulunamadı",
-  "error.http": "HTTP {0}: {1}"
+  "error.api_parse":              "Kullanım JSON ayrıştırma hatası",
+  "error.org_not_found":          "Organizasyon ID bulunamadı",
+  "error.http":                   "HTTP {0}: {1}"
 }

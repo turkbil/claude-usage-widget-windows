@@ -1,5 +1,8 @@
 {
   "tooltip": "This week: {0}% used · resets in {1}",
+  "title.loading": "…",
+  "title.error": "?",
+  "title.percent": "{0}%",
   "value.percent": "{0}%",
 
   "section.weekly": "WEEKLY",
@@ -18,15 +21,80 @@
 
   "menu.refresh": "Refresh now",
   "menu.open_usage": "Open claude.ai/settings/usage",
+  "menu.settings": "Settings…",
   "menu.run_at_startup": "Run at startup",
   "menu.quit": "Quit",
+  "menu.version_new": "New: v{0} →",
 
-  "error.cookie_db": "Cannot read Chrome cookie database",
-  "error.no_session": "No claude.ai session — please log in via Chrome",
-  "error.cookie_decrypt": "Cookie decryption failed",
-  "error.cookie_empty": "Cookie decrypted as empty",
+  "menu.title_content": "Title content",
+  "menu.icon": "Icon",
+  "menu.refresh_interval": "Refresh interval",
+  "menu.notifications": "Notifications",
+  "menu.hotkey": "Hotkey",
+  "menu.browsers": "Browsers",
+  "menu.network": "Network & integration",
+  "menu.version_check": "Check for updates",
+  "menu.local_http": "Local HTTP endpoint (:9123)",
+  "menu.mcp_install": "MCP install instructions…",
+
+  "settings.title": "Claude Usage Widget — Settings",
+
+  "metric.weekly_pct":   "Weekly %",
+  "metric.weekly_time":  "Weekly remaining",
+  "metric.five_pct":     "5-hour %",
+  "metric.five_time":    "5-hour remaining",
+
+  "mode.hidden": "Hide",
+  "mode.text":   "Text",
+  "mode.donut":  "Donut",
+  "mode.color":  "Color",
+
+  "icon.custom": "Custom emoji",
+  "icon.donut":  "Donut summary",
+  "icon.none":   "No icon",
+
+  "refresh.30s": "30 seconds",
+  "refresh.1m":  "1 minute",
+  "refresh.5m":  "5 minutes",
+  "refresh.10m": "10 minutes",
+
+  "notifications.enable":   "Enable threshold alerts",
+  "notifications.warn":     "Warning",
+  "notifications.alert":    "Alert",
+  "notifications.critical": "Critical",
+  "notification.warn":      "Weekly usage hit {0}% — pace yourself.",
+  "notification.alert":     "Weekly usage at {0}% — about 3 days left.",
+  "notification.critical":  "Weekly usage critical at {0}% — consider pausing heavy sessions.",
+
+  "hotkey.enable":  "Enable global hotkey",
+  "hotkey.current": "Current: {0}",
+  "hotkey.hint":    "Default: Ctrl+Alt+U",
+
+  "browser.chrome": "Google Chrome",
+  "browser.brave":  "Brave Browser",
+  "browser.edge":   "Microsoft Edge",
+  "browser.arc":    "Arc",
+
+  "button.ok":        "OK",
+  "button.cancel":    "Cancel",
+  "button.copy_path": "Copy binary path",
+
+  "mcp.install_title": "Install as MCP server",
+  "mcp.install_intro": "Add this snippet to your ~/.claude.json, then restart Claude Code. Claude will be able to call get_usage to see its own weekly limit.",
+  "mcp.copy_json":     "Copy JSON",
+
+  "forecast.under":    "↗ Projected end-of-week: {0}%",
+  "forecast.over":     "⚠ At this pace, limit in ~{0}",
+  "forecast.exceeded": "⚠ Limit exceeded",
+
+  "sparkline.empty": "trend data accumulating…",
+
+  "error.cookie_db":              "Cannot read browser cookie database",
+  "error.no_session":             "No claude.ai session — please log in via your browser",
+  "error.cookie_decrypt":         "Cookie decryption failed",
+  "error.cookie_empty":           "Cookie decrypted as empty",
   "error.unknown_cookie_version": "Unknown cookie version",
-  "error.api_parse": "Usage JSON parse error",
-  "error.org_not_found": "Organization ID not found",
-  "error.http": "HTTP {0}: {1}"
+  "error.api_parse":              "Usage JSON parse error",
+  "error.org_not_found":          "Organization ID not found",
+  "error.http":                   "HTTP {0}: {1}"
 }

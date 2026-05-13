@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -8,33 +9,66 @@ using Microsoft.Data.Sqlite;
 
 namespace ClaudeUsageWidget;
 
-/// <summary>
-/// Reads and decrypts the claude.ai sessionKey cookie from the local Chrome
-/// installation on Windows. Mirrors the macOS Swift implementation in the
-/// sister repo, adapted for the Windows crypto scheme:
-///
-///   1. Master key lives in `%LOCALAPPDATA%\Google\Chrome\User Data\Local State`,
-///      base64-encoded, DPAPI-protected.
-///   2. Each cookie's `encrypted_value` starts with "v10" or "v20", followed by
-///      a 12-byte nonce, ciphertext, and a 16-byte AES-256-GCM auth tag.
-/// </summary>
-public static class ChromeCookieReader
+public sealed record BrowserSource(string Id, string DisplayName, string UserDataDir)
+{
+    public string CookiesPath    => Path.Combine(UserDataDir, "Default", "Network", "Cookies");
+    public string LocalStatePath => Path.Combine(UserDataDir, "Local State");
+
+    public static readonly BrowserSource Chrome = new(
+        "chrome", "Google Chrome",
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                     "Google", "Chrome", "User Data"));
+
+    public static readonly BrowserSource Brave = new(
+        "brave", "Brave Browser",
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                     "BraveSoftware", "Brave-Browser", "User Data"));
+
+    public static readonly BrowserSource Edge = new(
+        "edge", "Microsoft Edge",
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                     "Microsoft", "Edge", "User Data"));
+
+    public static readonly BrowserSource Arc = new(
+        "arc", "Arc",
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                     "Arc", "User Data"));
+
+    public static IEnumerable<BrowserSource> EnabledFor(Preferences p)
+    {
+        if (p.BrowserChromeEnabled) yield return Chrome;
+        if (p.BrowserBraveEnabled)  yield return Brave;
+        if (p.BrowserEdgeEnabled)   yield return Edge;
+        if (p.BrowserArcEnabled)    yield return Arc;
+    }
+}
+
+/// Reads and decrypts the claude.ai sessionKey cookie. Tries each enabled
+/// Chromium-family browser in order; first valid session wins.
+public static class BrowserCookieReader
 {
     public static string GetSessionKey()
     {
-        var userData = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Google", "Chrome", "User Data");
-        var cookiesPath = Path.Combine(userData, "Default", "Network", "Cookies");
-        var localStatePath = Path.Combine(userData, "Local State");
+        var prefs = PrefsStore.Current;
+        var sources = BrowserSource.EnabledFor(prefs).ToList();
+        if (sources.Count == 0) sources.Add(BrowserSource.Chrome);   // safety net
 
-        if (!File.Exists(cookiesPath))
-            throw new InvalidOperationException(L.Get("error.cookie_db"));
-        if (!File.Exists(localStatePath))
-            throw new InvalidOperationException(L.Get("error.cookie_db"));
+        Exception? lastError = null;
+        foreach (var src in sources)
+        {
+            try { return GetSessionKey(src); }
+            catch (Exception ex) { lastError = ex; }
+        }
+        throw lastError ?? new InvalidOperationException(L.Get("error.no_session"));
+    }
 
-        byte[] masterKey = LoadMasterKey(localStatePath);
-        byte[] encrypted = LoadEncryptedCookieValue(cookiesPath);
+    public static string GetSessionKey(BrowserSource src)
+    {
+        if (!File.Exists(src.CookiesPath))    throw new InvalidOperationException(L.Get("error.cookie_db"));
+        if (!File.Exists(src.LocalStatePath)) throw new InvalidOperationException(L.Get("error.cookie_db"));
+
+        byte[] masterKey = LoadMasterKey(src.LocalStatePath);
+        byte[] encrypted = LoadEncryptedCookieValue(src.CookiesPath);
         return DecryptValue(encrypted, masterKey);
     }
 
@@ -47,7 +81,6 @@ public static class ChromeCookieReader
             throw new InvalidOperationException(L.Get("error.cookie_db"));
 
         byte[] encryptedKeyBytes = Convert.FromBase64String(encryptedKey.GetString()!);
-        // First 5 bytes are the "DPAPI" prefix.
         if (encryptedKeyBytes.Length < 5 ||
             Encoding.ASCII.GetString(encryptedKeyBytes, 0, 5) != "DPAPI")
             throw new InvalidOperationException(L.Get("error.cookie_decrypt"));
@@ -58,7 +91,6 @@ public static class ChromeCookieReader
 
     private static byte[] LoadEncryptedCookieValue(string cookiesPath)
     {
-        // Copy the live DB to a temp path because Chrome holds locks on it.
         string tmp = Path.Combine(Path.GetTempPath(),
             $"claude_widget_cookies_{Guid.NewGuid():N}.db");
         File.Copy(cookiesPath, tmp, overwrite: true);
@@ -95,7 +127,6 @@ public static class ChromeCookieReader
         if (prefix != "v10" && prefix != "v20")
             throw new InvalidOperationException(L.Get("error.unknown_cookie_version") + ": " + prefix);
 
-        // Layout: prefix(3) | nonce(12) | ciphertext(n) | tag(16)
         byte[] nonce = new byte[12];
         Array.Copy(encrypted, 3, nonce, 0, 12);
         int ctLen = encrypted.Length - 3 - 12 - 16;
@@ -108,19 +139,14 @@ public static class ChromeCookieReader
         using var aes = new AesGcm(masterKey, 16);
         aes.Decrypt(nonce, ciphertext, tag, plaintext);
 
-        // Chrome v20 cookies prepend a 32-byte SHA-256 host hash. Strip it.
         int start = 0;
         if (prefix == "v20" && plaintext.Length > 32)
         {
-            // Heuristic: if the first 32 bytes contain non-printable bytes, it's the hash.
             bool looksLikeHash = false;
             for (int i = 0; i < 32; i++)
-            {
                 if (plaintext[i] < 0x20 || plaintext[i] >= 0x7F) { looksLikeHash = true; break; }
-            }
             if (looksLikeHash) start = 32;
         }
-        // Trim trailing non-printable.
         int end = plaintext.Length;
         while (end > start && (plaintext[end - 1] < 0x20 || plaintext[end - 1] >= 0x7F)) end--;
         if (end <= start) throw new InvalidOperationException(L.Get("error.cookie_empty"));

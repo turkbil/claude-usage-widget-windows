@@ -36,7 +36,7 @@ public static class ClaudeApi
 
     public static async Task<UsageSnapshot> FetchSnapshotAsync()
     {
-        string cookie = ChromeCookieReader.GetSessionKey();
+        string cookie = BrowserCookieReader.GetSessionKey();
         string orgId = await FindOrgIdAsync(cookie);
 
         // Account & plan are optional — usage works without them.
